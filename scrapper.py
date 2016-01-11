@@ -23,7 +23,7 @@ def printKitchenDetails(kitchen_record):
                             headers={'Referer':'http://www.foodpantries.org'})
 
     mini_soup = BeautifulSoup(response.content,'html.parser')
-    print kitchen_record.url
+    # print kitchen_record.url
     if isinstance(mini_soup.contents[1],Tag):
         website_line = mini_soup.contents[1].text.strip()
     else:
@@ -70,9 +70,9 @@ states = soup.find('div',{'class':'multicolumn'}).find_all('li')
 
 
 for state in states:
-    state_url = states[0].find('a')['href']
-    state_name = states[0].find('a').text
-    state_count = states[0].find('em').text
+    state_url = state.find('a')['href']
+    state_name = state.find('a').text
+    state_count = str(state.find('em').text).translate(None,'()')
     response = requests.get(state_url)
     soup = BeautifulSoup(response.content, "html.parser")
     state_soup = soup.find_all('div', {'class':'widget'})[1]
@@ -90,5 +90,5 @@ with open('kitchens.csv', 'wb') as csvfile:
     kitchen_writer.writerow(headers)
     for k in kitchens_records:
         row = [k.state_name,k.state_url,k.state_count,k.city_name,k.city_listing_url,k.city_record_count,k.number,k.name,k.url,k.street_address,k.city_state,k.phone_number,k.website]
-        print row
+        # print row
         kitchen_writer.writerow([s.encode('utf8') if type(s) is unicode else s for s in row])
